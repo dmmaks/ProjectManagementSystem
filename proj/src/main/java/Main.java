@@ -9,7 +9,7 @@ public class Main {
             interactor = new PostgreInteractor();
 //            Company company = new Company(5, "nam", "2000-02-01");
 //            boolean result = interactor.updateCompany(company);
-            System.out.println(interactor.getDevelopersByProject(1));
+            System.out.println(interactor.getDevelopersPerProject());
         } catch (Exception e) {
             e.printStackTrace();
         }

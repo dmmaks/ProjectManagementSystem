@@ -27,11 +27,9 @@ public interface DatabaseInteractor {
     public boolean updateDeveloper(Developer developer);
     public boolean updateProject(Project project);
     public boolean updateSkill(Skill skill);
-    public int getSalarySum(int proj_id);
-    public List<Developer> getDevelopersByProject(int proj_id);
-//    public int getProjectSalariesSum();
-//    public List<Integer> getProjectDevs();
-//    public List<Integer> getJavaDevs();
-//    public List<Integer> getMiddleDevs();
-//    public List<Integer> getProjectDetails();
+    public int getSalarySum(int projId);
+    public List<Developer> getDevelopersByProject(int projId);
+    public List<Developer> getJavaDevelopers();
+    public List<Developer> getMiddleDevelopers();
+    public List<DevsPerProject> getDevelopersPerProject();
 }

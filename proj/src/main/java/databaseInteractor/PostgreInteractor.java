@@ -360,11 +360,11 @@ public class PostgreInteractor implements DatabaseInteractor {
         return updated;
     }
 
-    public int getSalarySum(int proj_id) {
+    public int getSalarySum(int projId) {
         String query = "SELECT SUM(salary) FROM developers INNER JOIN developers_projects ON developers.id = developers_projects.dev_id " +
                 "INNER JOIN projects ON projects.id = developers_projects.proj_id WHERE proj_id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, proj_id);
+            pstmt.setInt(1, projId);
             ResultSet resultSet = pstmt.executeQuery();
             if (resultSet.next()) {
                 int sum = resultSet.getInt("sum");
@@ -376,11 +376,11 @@ public class PostgreInteractor implements DatabaseInteractor {
         return 0;
     }
 
-    public List<Developer> getDevelopersByProject(int proj_id) {
+    public List<Developer> getDevelopersByProject(int projId) {
         List<Developer> resList = new ArrayList<>();
         String query = "SELECT id, name, birth_date, sex, salary FROM developers INNER JOIN developers_projects ON developers.id = developers_projects.dev_id WHERE proj_id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, proj_id);
+            pstmt.setInt(1, projId);
             ResultSet resultSet = pstmt.executeQuery();
             while (resultSet.next()) {
                 Developer developer = new Developer(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("birth_date"), resultSet.getString("sex"), resultSet.getInt("salary"));
@@ -391,4 +391,44 @@ public class PostgreInteractor implements DatabaseInteractor {
         }
         return resList;
     }
+
+    private List<Developer> getDevelopersByQuery(String query) {
+        List<Developer> resList = new ArrayList<>();
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+            ResultSet resultSet = pstmt.executeQuery();
+            while (resultSet.next()) {
+                Developer developer = new Developer(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("birth_date"), resultSet.getString("sex"), resultSet.getInt("salary"));
+                resList.add(developer);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resList;
+    }
+
+    public List<Developer> getJavaDevelopers() {
+        String query = "SELECT developers.id, name, birth_date, sex, salary FROM developers INNER JOIN developers_skills ON developers.id = developers_skills.dev_id INNER JOIN skills ON skills.id = developers_skills.skill_id WHERE skills.area ILIKE 'Java'";
+        return this.getDevelopersByQuery(query);
+    }
+
+    public List<Developer> getMiddleDevelopers() {
+        String query = "SELECT distinct developers.id, name, birth_date, sex, salary FROM developers INNER JOIN developers_skills ON developers.id = developers_skills.dev_id INNER JOIN skills ON skills.id = developers_skills.skill_id WHERE skills.level ILIKE 'middle'";
+        return this.getDevelopersByQuery(query);
+    }
+
+    public List<DevsPerProject> getDevelopersPerProject() {
+        List<DevsPerProject> resList = new ArrayList<>();
+        String query = "SELECT projects.name, projects.start_date, COUNT(dev_id) FROM developers INNER JOIN developers_projects ON developers.id = developers_projects.dev_id INNER JOIN projects ON projects.id = developers_projects.proj_id GROUP BY projects.name, projects.start_date";
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+            ResultSet resultSet = pstmt.executeQuery();
+            while (resultSet.next()) {
+                DevsPerProject devsCount = new DevsPerProject(resultSet.getString("start_date"), resultSet.getString("name"), resultSet.getInt("count"));
+                resList.add(devsCount);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resList;
+    }
+
 }
