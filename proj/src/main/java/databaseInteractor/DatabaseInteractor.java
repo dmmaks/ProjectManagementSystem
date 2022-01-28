@@ -1,6 +1,6 @@
 package databaseInteractor;
 
-import Enums.Entities;
+import enums.Entities;
 import entities.*;
 
 import java.util.List;

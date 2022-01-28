@@ -1,6 +1,6 @@
 package databaseInteractor;
 
-import Enums.Entities;
+import enums.Entities;
 import entities.*;
 
 import java.sql.*;
@@ -325,14 +325,14 @@ public class PostgreInteractor implements DatabaseInteractor {
 
     public boolean updateProject(Project project) {
         boolean updated = false;
-        String query = "UPDATE projects name = ?, start_date = ?, customer_id = ?, company_id = ?, cost = ? WHERE id = ?";
+        String query = "UPDATE projects SET name = ?, start_date = ?, customer_id = ?, company_id = ?, cost = ? WHERE id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, project.getName());
             pstmt.setDate(2, Date.valueOf(project.getStartDate()));
             pstmt.setInt(3, project.getCustomerId());
             pstmt.setInt(4, project.getCompanyId());
             pstmt.setInt(5, project.getCost());
-            pstmt.setInt(63, project.getId());
+            pstmt.setInt(6, project.getId());
             int rowCount = pstmt.executeUpdate();
             if (rowCount != 0) {
                 updated = true;
@@ -345,7 +345,7 @@ public class PostgreInteractor implements DatabaseInteractor {
 
     public boolean updateSkill(Skill skill) {
         boolean updated = false;
-        String query = "UPDATE skills area = ?, level = ? WHERE id = ?";
+        String query = "UPDATE skills SET area = ?, level = ? WHERE id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, skill.getArea());
             pstmt.setString(2, skill.getLevel());
