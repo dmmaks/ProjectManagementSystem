@@ -1,0 +1,11 @@
+package services;
+
+import java.util.List;
+
+public interface BasicService<E> {
+    public List<E> getAll();
+    public E getById(int id);
+    public boolean delete(int id);
+    public boolean create(E item);
+    public boolean update(E item);
+}
